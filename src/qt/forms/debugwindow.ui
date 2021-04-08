@@ -598,7 +598,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>16</width>
+             <width>24</width>
              <height>24</height>
             </size>
            </property>
@@ -607,13 +607,13 @@
            </property>
            <property name="icon">
             <iconset resource="../bitcoin.qrc">
-             <normaloff>:/icons/prompticon</normaloff>
-             <disabledoff>:/icons/prompticon</disabledoff>:/icons/prompticon</iconset>
+             <normaloff>:/icons/console_input</normaloff>
+             <disabledoff>:/icons/console_input</disabledoff>:/icons/console_input</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>14</width>
-             <height>14</height>
+             <width>24</width>
+             <height>24</height>
             </size>
            </property>
            <property name="autoDefault">
