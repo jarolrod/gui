@@ -10,6 +10,7 @@
 #include <qt/bitcoingui.h>
 #include <qt/networkstyle.h>
 #include <qt/rpcconsole.h>
+#include <qt/test/util.h>
 #include <shutdown.h>
 #include <test/util/setup_common.h>
 #include <univalue.h>
@@ -22,6 +23,7 @@
 #include <QAction>
 #include <QEventLoop>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QScopedPointer>
 #include <QTest>
 #include <QTextEdit>
@@ -44,6 +46,33 @@ void TestRpcCommand(RPCConsole* console)
     UniValue value;
     value.read(output.right(output.size() - output.lastIndexOf(QChar::ObjectReplacementCharacter) - 1).toStdString());
     QCOMPARE(value["chain"].get_str(), std::string("regtest"));
+}
+
+//! Resize console text and check for changed font size
+void TestConsoleResize(RPCConsole* console)
+{
+    QEventLoop loop;
+    QPushButton* font_bigger_button = console->findChild<QPushButton*>("fontBiggerButton");
+    QPushButton* font_smaller_button = console->findChild<QPushButton*>("fontSmallerButton");
+    QLineEdit* line_edit = console->findChild<QLineEdit*>("lineEdit");
+    QTextEdit* messages_widget = console->findChild<QTextEdit*>("messagesWidget");
+    QObject::connect(font_smaller_button, &QPushButton::clicked, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    int start_font_size = GetTextSize(messages_widget->toHtml());
+    QTest::keyClicks(line_edit, "getblockchaininfo");
+
+    // increase font size
+    QTest::mouseClick(font_bigger_button, Qt::LeftButton);
+    int inc_font_size = GetTextSize(messages_widget->toHtml());
+    QVERIFY(inc_font_size > start_font_size);
+    QCOMPARE(line_edit->text(), QString("getblockchaininfo"));
+
+    // decrease font size
+    QTest::mouseClick(font_smaller_button, Qt::LeftButton);
+    int dec_font_size = GetTextSize(messages_widget->toHtml());
+    QCOMPARE(dec_font_size, start_font_size);
+    QCOMPARE(line_edit->text(), QString("getblockchaininfo"));
 }
 } // namespace
 
@@ -106,6 +135,7 @@ void AppTests::consoleTests(RPCConsole* console)
 {
     HandleCallback callback{"consoleTests", *this};
     TestRpcCommand(console);
+    TestConsoleResize(console);
 }
 
 //! Destructor to shut down after the last expected callback completes.

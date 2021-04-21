@@ -15,4 +15,11 @@
  */
 void ConfirmMessage(QString* text = nullptr, int msec = 0);
 
+/**
+ * Get the current console text size.
+ *
+ * @param text - Text to regex search for font size
+ */
+int GetTextSize(QString text);
+
 #endif // BITCOIN_QT_TEST_UTIL_H

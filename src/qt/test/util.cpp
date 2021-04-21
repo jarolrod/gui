@@ -5,6 +5,8 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 #include <QString>
 #include <QTimer>
 #include <QWidget>
@@ -20,4 +22,12 @@ void ConfirmMessage(QString* text, int msec)
             }
         }
     });
+}
+
+int GetTextSize(QString text)
+{
+	QRegularExpression re("font-size:(\\d+)pt", QRegularExpression::MultilineOption);
+	QRegularExpressionMatch match = re.match(text);
+	if (match.hasMatch()) return match.captured(1).toInt();
+	else return 0;
 }
