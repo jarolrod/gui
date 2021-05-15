@@ -494,7 +494,9 @@ RPCConsole::RPCConsole(interfaces::Node& node, const PlatformStyle *_platformSty
     if (platformStyle->getImagesOnButtons()) {
         ui->openDebugLogfileButton->setIcon(platformStyle->SingleColorIcon(":/icons/export"));
     }
+
     ui->clearButton->setIcon(platformStyle->SingleColorIcon(":/icons/remove"));
+    ui->promptIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/prompticon").pixmap(14, 14));
 
     ui->fontBiggerButton->setIcon(platformStyle->SingleColorIcon(":/icons/fontbigger"));
     //: Main shortcut to increase the RPC console font size.
