@@ -494,6 +494,7 @@ RPCConsole::RPCConsole(interfaces::Node& node, const PlatformStyle *_platformSty
     if (platformStyle->getImagesOnButtons()) {
         ui->openDebugLogfileButton->setIcon(platformStyle->SingleColorIcon(":/icons/export"));
     }
+
     ui->clearButton->setIcon(platformStyle->SingleColorIcon(":/icons/remove"));
 
     ui->fontBiggerButton->setIcon(platformStyle->SingleColorIcon(":/icons/fontbigger"));
@@ -507,6 +508,8 @@ RPCConsole::RPCConsole(interfaces::Node& node, const PlatformStyle *_platformSty
     ui->fontSmallerButton->setShortcut(tr("Ctrl+-"));
     //: Secondary shortcut to decrease the RPC console font size.
     GUIUtil::AddButtonShortcut(ui->fontSmallerButton, tr("Ctrl+_"));
+    
+    ui->promptIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/prompticon").pixmap(14, 14));
 
     // Install event filter for up and down arrow
     ui->lineEdit->installEventFilter(this);
