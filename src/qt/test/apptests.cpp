@@ -12,7 +12,6 @@
 #include <qt/rpcconsole.h>
 #include <shutdown.h>
 #include <test/util/setup_common.h>
-#include <univalue.h>
 #include <validation.h>
 
 #if defined(HAVE_CONFIG_H)
@@ -24,6 +23,7 @@
 #include <QLineEdit>
 #include <QRegularExpression>
 #include <QScopedPointer>
+#include <QString>
 #include <QTest>
 #include <QTextEdit>
 #include <QtGlobal>
@@ -48,10 +48,9 @@ void TestRpcCommand(RPCConsole* console)
     QTest::keyClicks(lineEdit, "getblockchaininfo");
     QTest::keyClick(lineEdit, Qt::Key_Return);
     loop.exec();
-    QString output = messagesWidget->toPlainText();
-    UniValue value;
-    value.read(output.right(output.size() - output.lastIndexOf(QChar::ObjectReplacementCharacter) - 1).toStdString());
-    QCOMPARE(value["chain"].get_str(), std::string("regtest"));
+    const QString output = messagesWidget->toPlainText();
+    const QString pattern = "\"chain\": \"(\\w+)\"";
+    QCOMPARE(FindInConsole(output, pattern), QString("regtest"));
 }
 } // namespace
 
