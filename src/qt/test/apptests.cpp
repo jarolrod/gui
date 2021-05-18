@@ -39,17 +39,15 @@ QString FindInConsole(const QString& output, const QString& pattern)
 }
 
 //! Call getblockchaininfo RPC and check first field of JSON output.
-void TestRpcCommand(RPCConsole* console)
+void TestRpcCommand(QTextEdit* messages_widget, QLineEdit* line_edit)
 {
-    QTextEdit* messagesWidget = console->findChild<QTextEdit*>("messagesWidget");
-    QLineEdit* lineEdit = console->findChild<QLineEdit*>("lineEdit");
-    QSignalSpy mw_spy(messagesWidget, &QTextEdit::textChanged);
+    QSignalSpy mw_spy(messages_widget, &QTextEdit::textChanged);
     QVERIFY(mw_spy.isValid());
-    QTest::keyClicks(lineEdit, "getblockchaininfo");
-    QTest::keyClick(lineEdit, Qt::Key_Return);
+    QTest::keyClicks(line_edit, "getblockchaininfo");
+    QTest::keyClick(line_edit, Qt::Key_Return);
     QVERIFY(mw_spy.wait(1000));
     QCOMPARE(mw_spy.count(), 2);
-    const QString output = messagesWidget->toPlainText();
+    const QString output = messages_widget->toPlainText();
     const QString pattern = "\"chain\": \"(\\w+)\"";
     QCOMPARE(FindInConsole(output, pattern), QString("regtest"));
 }
@@ -113,7 +111,9 @@ void AppTests::guiTests(BitcoinGUI* window)
 void AppTests::consoleTests(RPCConsole* console)
 {
     HandleCallback callback{"consoleTests", *this};
-    TestRpcCommand(console);
+    QTextEdit* messages_widget = console->findChild<QTextEdit*>("messagesWidget");
+    QLineEdit* line_edit = console->findChild<QLineEdit*>("lineEdit");
+    TestRpcCommand(messages_widget, line_edit);
 }
 
 //! Destructor to shut down after the last expected callback completes.
