@@ -671,7 +671,11 @@ QString ConnectionTypeToQString(ConnectionType conn_type, bool prepend_direction
 {
     QString prefix;
     if (prepend_direction) {
-        prefix = (conn_type == ConnectionType::INBOUND) ? QObject::tr("Inbound") : QObject::tr("Outbound") + " ";
+        prefix = (conn_type == ConnectionType::INBOUND) ?
+                     //: An Inbound Connection from a Peer.
+                     QObject::tr("Inbound") :
+                     //: An Outbound Connection to a Peer.
+                     QObject::tr("Outbound") + " ";
     }
     switch (conn_type) {
     case ConnectionType::INBOUND: return prefix;
