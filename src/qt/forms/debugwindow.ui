@@ -592,34 +592,17 @@
           <number>3</number>
          </property>
          <item>
-          <widget class="QPushButton" name="promptIcon">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
+          <widget class="GUIUtil::ThemedLabel" name="promptIcon">
            <property name="maximumSize">
-            <size>
-             <width>16</width>
-             <height>24</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../bitcoin.qrc">
-             <normaloff>:/icons/prompticon</normaloff>
-             <disabledoff>:/icons/prompticon</disabledoff>:/icons/prompticon</iconset>
-           </property>
-           <property name="iconSize">
             <size>
              <width>14</width>
              <height>14</height>
             </size>
            </property>
-           <property name="autoDefault">
-            <bool>false</bool>
+           <property name="pixmap">
+            <pixmap resource="../bitcoin.qrc">:/icons/prompticon</pixmap>
            </property>
-           <property name="flat">
+           <property name="scaledContents">
             <bool>true</bool>
            </property>
           </widget>
@@ -1657,6 +1640,12 @@
    <slots>
     <slot>clear()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+    <class>GUIUtil::ThemedLabel</class>
+    <extends>QLabel</extends>
+    <header>qt/guiutil.h</header>
+    <container>2</container>
   </customwidget>
  </customwidgets>
  <resources>

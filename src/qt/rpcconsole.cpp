@@ -14,6 +14,7 @@
 #include <netbase.h>
 #include <qt/bantablemodel.h>
 #include <qt/clientmodel.h>
+#include <qt/guiutil.h>
 #include <qt/peertablesortproxy.h>
 #include <qt/platformstyle.h>
 #include <qt/walletmodel.h>
@@ -494,7 +495,11 @@ RPCConsole::RPCConsole(interfaces::Node& node, const PlatformStyle *_platformSty
     if (platformStyle->getImagesOnButtons()) {
         ui->openDebugLogfileButton->setIcon(platformStyle->SingleColorIcon(":/icons/export"));
     }
+
     ui->clearButton->setIcon(platformStyle->SingleColorIcon(":/icons/remove"));
+
+    ui->promptIcon->setPlatformStyle(platformStyle);
+    ui->promptIcon->setThemedPixmap(QStringLiteral(":/icons/prompticon"), 14, 14);
 
     ui->fontBiggerButton->setIcon(platformStyle->SingleColorIcon(":/icons/fontbigger"));
     //: Main shortcut to increase the RPC console font size.
@@ -856,7 +861,6 @@ void RPCConsole::changeEvent(QEvent* e)
         ui->clearButton->setIcon(platformStyle->SingleColorIcon(QStringLiteral(":/icons/remove")));
         ui->fontBiggerButton->setIcon(platformStyle->SingleColorIcon(QStringLiteral(":/icons/fontbigger")));
         ui->fontSmallerButton->setIcon(platformStyle->SingleColorIcon(QStringLiteral(":/icons/fontsmaller")));
-        ui->promptIcon->setIcon(platformStyle->SingleColorIcon(QStringLiteral(":/icons/prompticon")));
 
         for (int i = 0; ICON_MAPPING[i].url; ++i) {
             ui->messagesWidget->document()->addResource(
