@@ -51,6 +51,28 @@ void TestRpcCommand(QTextEdit* messages_widget, QLineEdit* line_edit)
     const QString pattern = "\"chain\": \"(\\w+)\"";
     QCOMPARE(FindInConsole(output, pattern), QString("regtest"));
 }
+
+//! Comment
+void TestConsoleResize(QTextEdit* messages_widget, QLineEdit* line_edit,
+          QAbstractButton* bigger_button, QAbstractButton* smaller_button)
+{
+  QSignalSpy mw_spy(messages_widget, &QTextEdit::textChanged);
+  QSignalSpy le_spy(line_edit, &QLineEdit::returnPressed);
+  QSignalSpy bb_spy(bigger_button, &QAbstractButton::clicked);
+  QSignalSpy sb_spy(smaller_button, &QAbstractButton::clicked);
+  QVERIFY(mw_spy.isValid());
+  QVERIFY(le_spy.isValid());
+  QVERIFY(bb_spy.isValid());
+  QVERIFY(sb_spy.isValid());
+
+  // resize bigger first and check that prompt is preserved
+  bigger_button->animateClick();
+  QCOMPARE(line_edit->text(), "getblockchaininfo");
+
+
+
+}
+
 } // namespace
 
 //! Entry point for BitcoinApplication tests.
@@ -113,6 +135,8 @@ void AppTests::consoleTests(RPCConsole* console)
     HandleCallback callback{"consoleTests", *this};
     QTextEdit* messages_widget = console->findChild<QTextEdit*>("messagesWidget");
     QLineEdit* line_edit = console->findChild<QLineEdit*>("lineEdit");
+    QAbstractButton* bigger_button = console->findChild<QAbstractButton*>("fontBiggerButton");
+    QAbstractButton* smaller_button = console->findChild<QAbstractButton*>("fontSmallerButton");
     TestRpcCommand(messages_widget, line_edit);
 }
 
