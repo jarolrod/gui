@@ -221,6 +221,18 @@ QString formatBitcoinURI(const SendCoinsRecipient &info)
     return ret;
 }
 
+QString formatDefaultBlockExplorerUrl()
+{
+    std::string chain = gArgs.GetChainName();
+    if (chain == CBaseChainParams::MAIN)
+        return QStringLiteral("https://mempool.space/tx/%s");
+    if (chain == CBaseChainParams::TESTNET)
+        return QStringLiteral("https://mempool.space/testnet/tx/%s");
+    if (chain == CBaseChainParams::SIGNET)
+        return QStringLiteral("https://mempool.space/signet/tx/%s");
+    return QStringLiteral("");
+}
+
 bool isDust(interfaces::Node& node, const QString& address, const CAmount& amount)
 {
     CTxDestination dest = DecodeDestination(address.toStdString());
