@@ -286,9 +286,17 @@ void OptionsDialog::on_resetButton_clicked()
 {
     if (model) {
         // confirmation dialog
+        //: Window title text of pop-up window shown when the user has chosen to reset options.
         QMessageBox::StandardButton btnRetVal = QMessageBox::question(this, tr("Confirm options reset"),
+            /*: Text explaining that the settings the user changed will not come
+                into effect until the client is restarted. */
             tr("Client restart required to activate changes.") + "<br><br>" +
+            /*: Text explaining to the user that the client's current settings
+                will be backed up at a specific location. %1 is a stand-in
+                argument for the backup location's path. */
             tr("Current settings will be backed up at \"%1\".").arg(m_client_model->dataDir()) + "<br><br>" +
+            /*: Text asking the user to confirm if they would like to proceed
+                with a client shutdown. */
             tr("Client will be shut down. Do you want to proceed?"),
             QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
