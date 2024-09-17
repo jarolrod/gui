@@ -149,7 +149,7 @@ WalletModel* WalletController::getOrCreateWallet(std::unique_ptr<interfaces::Wal
     const bool called = QMetaObject::invokeMethod(wallet_model, "startPollBalance");
     assert(called);
 
-    connect(wallet_model, &WalletModel::unload, this, [this, wallet_model] {
+    connect(wallet_model, &WalletModel::unload, wallet_model, [this, wallet_model] {
         // Defer removeAndDeleteWallet when no modal widget is actively waiting for an action.
         // TODO: remove this workaround by removing usage of QDialog::exec.
         QWidget* active_dialog = QApplication::activeModalWidget();
