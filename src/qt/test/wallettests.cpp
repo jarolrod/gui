@@ -45,6 +45,8 @@
 #include <QTextEdit>
 #include <QListView>
 #include <QDialogButtonBox>
+#include <qt/walletcontroller.h> // For WalletController
+#include <QSignalSpy>            // For QSignalSpy
 
 using wallet::AddWallet;
 using wallet::CWallet;
@@ -239,6 +241,7 @@ public:
     OptionsModel optionsModel;
     std::unique_ptr<ClientModel> clientModel;
     std::unique_ptr<WalletModel> walletModel;
+    std::unique_ptr<WalletController> walletController;
 
     MiniGUI(interfaces::Node& node, const PlatformStyle* platformStyle) : sendCoinsDialog(platformStyle), transactionView(platformStyle), optionsModel(node) {
         bilingual_str error;
@@ -251,6 +254,7 @@ public:
         WalletContext& context = *node.walletLoader().context();
         AddWallet(context, wallet);
         walletModel = std::make_unique<WalletModel>(interfaces::MakeWallet(context, wallet), *clientModel, platformStyle);
+        walletController = std::make_unique<WalletController>(*clientModel, platformStyle, nullptr);
         RemoveWallet(context, wallet, /* load_on_start= */ std::nullopt);
         sendCoinsDialog.setModel(walletModel.get());
         transactionView.setModel(walletModel.get());
@@ -445,6 +449,35 @@ void TestGUIWatchOnly(interfaces::Node& node, TestChain100Setup& test)
     QVERIFY(DecodeRawPSBT(psbt, MakeByteSpan(*decoded_psbt), err));
 }
 
+void TestCloseWallet(interfaces::Node& node, const std::shared_ptr<wallet::CWallet>& wallet)
+{
+    // Set up
+    std::unique_ptr<const PlatformStyle> platformStyle(PlatformStyle::instantiate("other"));
+    MiniGUI mini_gui(node, platformStyle.get());
+    mini_gui.initModelForWallet(node, wallet, platformStyle.get());
+    WalletModel& walletModel = *mini_gui.walletModel;
+    WalletController& walletController = *mini_gui.walletController;
+
+   
+    walletController.getOrCreateWallet(interfaces::MakeWallet(*node.walletLoader().context(), wallet));
+    // Spy on walletRemoved signal
+    QSignalSpy wallet_removed_spy(&walletController, &WalletController::walletRemoved);
+
+    // Spy on unload signal
+    QSignalSpy unload_spy(&walletModel, &WalletModel::unload);
+
+    // Close all wallets
+    walletController.closeAllWallets();
+
+    // Wait for the unload signal
+    QVERIFY(unload_spy.wait(5000));
+    QCOMPARE(unload_spy.count(), 1);
+
+    // Wait for the walletRemoved signal
+    QVERIFY(wallet_removed_spy.wait(5000));
+    QCOMPARE(wallet_removed_spy.count(), 1);
+}
+
 void TestGUI(interfaces::Node& node)
 {
     // Set up wallet and chain with 105 blocks (5 mature blocks for spending).
@@ -463,6 +496,7 @@ void TestGUI(interfaces::Node& node)
     // Legacy watch-only wallet test
     // Verify PSBT creation.
     TestGUIWatchOnly(node, test);
+    TestCloseWallet(node, desc_wallet);
 }
 
 } // namespace
